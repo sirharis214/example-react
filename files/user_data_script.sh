@@ -47,6 +47,16 @@ check_error
 sudo cp -r /home/ec2-user/example-react/example-app/build/* /var/www/build/
 check_error
 
+# Check if the www-data user exists
+if id "www-data" >/dev/null 2>&1; then
+    echo "www-data user exists."
+else
+    # Create the www-data user
+    sudo adduser --system --no-create-home www-data
+    echo "www-data user created."
+fi
+
+# Set ownership for the directory
 sudo chown -R www-data:www-data /var/www/build
 check_error
 
@@ -62,7 +72,7 @@ CONFIG_CONTENT="server {
 }"
 
 # Define the path to the Nginx conf.d directory
-NGINX_CONF_DIR="/etc/nginx/conf.d/"
+NGINX_CONF_DIR="/etc/nginx/conf.d"
 CONFIG_FILE="$NGINX_CONF_DIR/react.conf"
 
 # Check if the react.conf file exists
